@@ -1,0 +1,49 @@
+# note の RSS を日次取得して data/notes.json を更新する。
+# 詳細な運用手順(赤くなったとき・止まったときの対処)は README.md を参照。
+name: Fetch note RSS
+
+on:
+  schedule:
+    - cron: "30 21 * * *" # UTC 21:30 = JST 6:30(毎時00分などの混雑時刻を避けた値)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # 末尾の keepalive ステップ(workflow enable)に必要
+
+concurrency:
+  group: fetch-note
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22" # runner 同梱の Node に暗黙依存しない(再現性のため明示)
+
+      - name: RSS を取得して notes.json を生成
+        run: node scripts/fetch-note-rss.mjs
+
+      - name: 差分があるときだけコミット
+        run: |
+          git add data/notes.json
+          if git diff --cached --quiet; then
+            echo "変更なし(コミットしない)"
+          else
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore: note記事一覧を自動更新"
+            git push
+          fi
+
+      # schedule ワークフローは60日間リポジトリに活動がないと自動停止するため、
+      # 実行のたびに自分自身を enable し直して停止を防ぐ
+      - name: ワークフローの自動停止を防ぐ(keepalive)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/fetch-note.yml/enable"
