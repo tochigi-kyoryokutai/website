@@ -3,7 +3,7 @@
 栃木県内の地域おこし協力隊員・OB/OG・関係者をつなぐネットワークの公式サイトです。
 
 - 公開URL: https://tochigi-kyoryokutai.org (準備中)
-- 構成: 静的HTML/CSS + GitHub Pages
+- 構成: 静的HTML/CSS + Cloudflare Pages(GitHub リポジトリを接続し、main への push ごとに自動デプロイ)
 - 活動情報: note の記事を GitHub Actions で定期取得して表示しています
 
 ## サイト構成
@@ -53,28 +53,31 @@ done
 
 ### ローカルでの確認方法
 
-本番はサブパス(`/website/`)配信のため、**親ディレクトリから**サーバを起動して同じ条件で確認する:
+本番はドメイン直下(ルート)配信。リポジトリ直下でサーバを起動して確認する:
 
 ```sh
-cd .. && python3 -m http.server 8000
-# → http://localhost:8000/tochigi-network-site/ を開く
+python3 -m http.server 8000
+# → http://localhost:8000/ を開く
 ```
+
+本番と同じ条件で見たいときは、ブランチを push すると Cloudflare Pages がブランチごとのプレビュー URL を発行する。
 
 確認する幅: 320px / 375px / PC。JS無効でも新着セクションが消えるだけで他が無傷なこと。
 
 ### ドメイン関連(年次・重要)
 
-- **ドメイン `tochigi-kyoryokutai.org` の更新を切らさない**(お名前.com・法人名義)。自動更新設定と支払い方法、登録メールアドレスの受信可否を年1回確認する。サイトが死ぬ最有力シナリオは技術障害ではなくドメイン失効
-- GitHub Organization のオーナーは2名以上を維持する(担当者が動けなくなっても運営が続くように)
+- **ドメイン `tochigi-kyoryokutai.org` の更新を切らさない**(Cloudflare Registrar・法人名義)。自動更新設定と支払いカードの有効期限、登録メールアドレスの受信可否を年1回確認する。サイトが死ぬ最有力シナリオは技術障害ではなくドメイン失効
+- GitHub Organization のオーナー、Cloudflare アカウントの管理者は、それぞれ2名以上を維持する(担当者が動けなくなっても運営が続くように)
+- ホスティング(Pages)・ドメイン・DNS・メール転送(Email Routing)はすべて同じ Cloudflare アカウントにある。アカウントを失うと全部止まるので、ログイン情報と2段階認証の復旧コードは法人で保管する
 
 ### ドメイン接続時にやること(未了タスク)
 
-1. Org Settings → Verified and approved domains で `tochigi-kyoryokutai.org` を TXT レコード検証
-2. DNS 設定: A レコード 4本(185.199.108.153 / 185.199.109.153 / 185.199.110.153 / 185.199.111.153)+ `www` の CNAME → `tochigi-kyoryokutai.github.io`
-3. リポジトリ Settings → Pages でカスタムドメインを設定(`CNAME` ファイルが main に自動コミットされるので、ローカルで `git pull` する)
-4. 証明書発行の完了を待ってから Enforce HTTPS を ON
+1. Cloudflare Registrar で `tochigi-kyoryokutai.org` を取得(法人名義)。DNS は自動で同じアカウントの Cloudflare DNS に置かれる
+2. Workers & Pages → 対象プロジェクト → Custom domains で `tochigi-kyoryokutai.org` と `www.tochigi-kyoryokutai.org` を追加(DNS レコードと証明書は自動)
+3. `www` → apex のリダイレクトをダッシュボードの Redirect Rules で設定。SSL/TLS → Edge Certificates で「Always Use HTTPS」を ON
+4. Email Routing で法人アドレス(`info@` 等)を作成し、転送先で実際に受信できるところまで確認する
 5. 全4ページの `<head>` に `og:url` / `canonical` を追加、`about.html` の JSON-LD に `url` を追加
-6. `404.html` 内のリンク2箇所を独自ドメインに書き換え(移行時に変更が必要なのはこのファイルのみ)
+6. `404.html` 内のリンク2箇所を独自ドメインに書き換え(移行時に変更が必要なのはこのファイルのみ。`404.html` はリポジトリ直下に置けば Cloudflare Pages が自動で使う)
 
 ### その他の未了タスク(HTML内の `TODO:` コメントで検索可能)
 
