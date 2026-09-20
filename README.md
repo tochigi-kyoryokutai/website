@@ -27,15 +27,15 @@
 
 - 4ページ・CSS・note取得スクリプト・日次Actionsは実装済み。サイト本体は2026-08-26にコミット済み。
 - 設立年月日は令和8（2026）年4月1日。2026-09-20に確認し、団体概要に反映済み。
-- ローカルのブランチは `main`。リモート接続先は未設定のため、このチェックアウトからの公開連携はまだできていない。
-- GitHub Organization `tochigi-kyoryokutai` は公開APIで存在確認済み。`tochigi-kyoryokutai/website` は未認証APIで404（未作成か非公開かは未確認）。
+- ローカルのブランチは `main`。リモート `origin` は `https://github.com/tochigi-kyoryokutai/website.git` に設定済み。
+- GitHub Organization `tochigi-kyoryokutai` の管理画面でリポジトリが未作成であることを確認し、公開リポジトリ [`website`](https://github.com/tochigi-kyoryokutai/website) を作成済み。
 - Cloudflare アカウント・Pagesプロジェクト・ドメインの取得状況は未確認。
 - note アカウントは `tochioko_nw` に設定済み。ただし保存済み記事はタイトルに「(テスト)」を含む1件。公開前に掲載内容とRSSを確認する。
 
 再開する順序:
 
 1. ローカルで4ページを確認し、定款の「目的及び事業」・note記事の掲載内容を確定する。定款の原文確認は後日行い、接続準備は先に進める。文言の差し替え後も同じGitHub・Pages連携で更新できる。
-2. GitHub にログインした状態で団体の管理権限と `website` の有無を確認。未作成ならリポジトリを作成し、公開対象を確認して接続・pushする。
+2. 変更をコミットして `git push -u origin main` でGitHubへ送る。GitHub側の `main` とローカルの最新コミットが一致することを確認する。
 3. Cloudflare Pages にGitHubリポジトリを接続し、`*.pages.dev` で4ページ・404・note表示を確認する。
 4. Actionsの「Fetch note RSS」を手動実行し、記事取得からPagesへの反映まで確認する。
 5. サイト確認後、独自ドメインの取得・接続とメール転送を進める。
