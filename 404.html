@@ -7,9 +7,9 @@
   <meta name="robots" content="noindex">
   <!--
     このファイルだけの特例:
-    カスタム404は「存在しないURL」のパスを基準に相対解決されるため、相対パスが使えない。
-    CSSはインライン化し、リンクは絶対URLで書く。
-    TODO: 独自ドメイン(tochigi-kyoryokutai.org)接続時に、下のリンク2箇所を書き換える(サイト内で移行時に変更するのはこのファイルのみ)。
+    カスタム404は「存在しないURL」のパスを基準に相対解決されるため、文書相対パスは使わない。
+    CSSはインライン化し、リンクはルート相対パスで書く。
+    Cloudflare Pages の仮URL・独自ドメインともルート配信なので、ドメイン接続時の書き換えは不要。
   -->
   <style>
     * { box-sizing: border-box; }
@@ -53,8 +53,8 @@
 <main>
   <h1>ページが見つかりません</h1>
   <p>お探しのページは、移動または削除された可能性があります。URLをご確認いただくか、トップページからご覧ください。</p>
-  <p><a class="button" href="https://tochigi-kyoryokutai.github.io/website/">トップページへ戻る</a></p>
-  <p><a href="https://tochigi-kyoryokutai.github.io/website/contact.html">お問い合わせはこちら</a></p>
+  <p><a class="button" href="/">トップページへ戻る</a></p>
+  <p><a href="/contact.html">お問い合わせはこちら</a></p>
 </main>
 </body>
 </html>

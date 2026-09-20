@@ -13,8 +13,8 @@
 | `index.html` | トップ(ヒーロー・活動ダイジェスト・新着note) |
 | `about.html` | 団体概要(法人概要・目的及び事業) |
 | `business.html` | 事業内容(県委託事業・活動レポート) |
-| `contact.html` | お問い合わせ(Googleフォーム埋め込み) |
-| `404.html` | エラーページ(CSSインライン+絶対URLの特例) |
+| `contact.html` | お問い合わせ(相談窓口のGoogleフォーム2件へのリンク) |
+| `404.html` | エラーページ(CSSインライン+ルート相対リンク) |
 | `css/styles.css` | 唯一のCSS。冒頭 `:root` にデザイントークン |
 | `js/news.js` | `data/notes.json` を読み込んで新着noteを描画 |
 | `data/notes.json` | GitHub Actions が自動生成する唯一の可変データ |
@@ -22,6 +22,25 @@
 | `.github/workflows/fetch-note.yml` | 日次実行(JST 6:30)+手動実行 |
 
 方針: フレームワーク・ビルドステップ・npm 依存を使わない。10年後に誰でも読めることを優先する。
+
+## 実装再開時の現在地（2026-09-20 確認）
+
+- 4ページ・CSS・note取得スクリプト・日次Actionsは実装済み。サイト本体は2026-08-26にコミット済み。
+- 設立年月日は令和8（2026）年4月1日。2026-09-20に確認し、団体概要に反映済み。
+- ローカルのブランチは `main`。リモート接続先は未設定のため、このチェックアウトからの公開連携はまだできていない。
+- GitHub Organization `tochigi-kyoryokutai` は公開APIで存在確認済み。`tochigi-kyoryokutai/website` は未認証APIで404（未作成か非公開かは未確認）。
+- Cloudflare アカウント・Pagesプロジェクト・ドメインの取得状況は未確認。
+- note アカウントは `tochioko_nw` に設定済み。ただし保存済み記事はタイトルに「(テスト)」を含む1件。公開前に掲載内容とRSSを確認する。
+
+再開する順序:
+
+1. ローカルで4ページを確認し、定款の「目的及び事業」・note記事の掲載内容を確定する。定款の原文確認は後日行い、接続準備は先に進める。文言の差し替え後も同じGitHub・Pages連携で更新できる。
+2. GitHub にログインした状態で団体の管理権限と `website` の有無を確認。未作成ならリポジトリを作成し、公開対象を確認して接続・pushする。
+3. Cloudflare Pages にGitHubリポジトリを接続し、`*.pages.dev` で4ページ・404・note表示を確認する。
+4. Actionsの「Fetch note RSS」を手動実行し、記事取得からPagesへの反映まで確認する。
+5. サイト確認後、独自ドメインの取得・接続とメール転送を進める。
+
+Pages の設定値: Production branch `main`、Framework preset `None`、Build command `exit 0`（変換処理なし）、Build output directory `/`（このリポジトリのルート）。[Cloudflare公式の静的HTML手順](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)を参照。
 
 ## 保守手順
 
@@ -42,7 +61,7 @@ done
 
 ### note アカウントの設定
 
-`scripts/fetch-note-rss.mjs` 冒頭の `const NOTE_ACCOUNT = "PLACEHOLDER";` の1行だけを実アカウント名に書き換える。その後 Actions タブから「Fetch note RSS」を手動実行(Run workflow)し、`data/notes.json` が bot コミットで更新される → サイトに反映される、まで一度通して確認する。
+`scripts/fetch-note-rss.mjs` 冒頭の `const NOTE_ACCOUNT = "tochioko_nw";` は設定済み。アカウントを変更する場合はこの1行を書き換える。GitHub接続後、Actions タブから「Fetch note RSS」を手動実行(Run workflow)し、取得成功と、データに差分がある場合の bot コミット → サイト反映まで一度通して確認する。
 
 ### Actions が赤い・止まったときの一次切り分け
 
@@ -77,12 +96,11 @@ python3 -m http.server 8000
 3. `www` → apex のリダイレクトをダッシュボードの Redirect Rules で設定。SSL/TLS → Edge Certificates で「Always Use HTTPS」を ON
 4. Email Routing で法人アドレス(`info@` 等)を作成し、転送先で実際に受信できるところまで確認する
 5. 全4ページの `<head>` に `og:url` / `canonical` を追加、`about.html` の JSON-LD に `url` を追加
-6. `404.html` 内のリンク2箇所を独自ドメインに書き換え(移行時に変更が必要なのはこのファイルのみ。`404.html` はリポジトリ直下に置けば Cloudflare Pages が自動で使う)
+6. 存在しない深いパス（例: `/missing/page`）で `404.html` が表示され、トップ・お問い合わせに戻れることを確認する。リンクはルート相対なので、独自ドメイン接続時の書き換えは不要
 
 ### その他の未了タスク(HTML内の `TODO:` コメントで検索可能)
 
 - 定款「目的及び事業」原文 → `about.html` の該当節を差し替え
-- 設立年月日の確認 → `about.html` の法人概要に追加
 - (任意)一般向けお問い合わせフォーム → 現状は相談窓口2フォーム(現役隊員向け・市町職員向け)へのリンクで運用中。追加する場合は `contact.html` の TODO コメント参照
 - 法人英語表記の確定 → 4ファイルのフッター+`about.html` の JSON-LD に追記
 
