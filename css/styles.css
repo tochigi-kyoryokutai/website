@@ -164,6 +164,7 @@ a:focus-visible {
 
 .band * + p,
 .band * + ul,
+.band * + ol,
 .band * + dl {
   margin-top: var(--space-2);
 }
