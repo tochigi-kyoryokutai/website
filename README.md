@@ -2,7 +2,8 @@
 
 栃木県内の地域おこし協力隊員・OB/OG・関係者をつなぐネットワークの公式サイトです。
 
-- 公開URL: https://tochigi-kyoryokutai.org (準備中)
+- 公開URL(暫定): **https://tochigi-kyoryokutai.pages.dev** — 2026-09-21 時点で**公開中・誰でも閲覧できる**
+- 公開URL(本番予定): https://tochigi-kyoryokutai.org (ドメイン未取得)
 - 構成: 静的HTML/CSS + Cloudflare Pages(GitHub リポジトリを接続し、main への push ごとに自動デプロイ)
 - 活動情報: note の記事を GitHub Actions で定期取得して表示しています
 
@@ -29,16 +30,20 @@
 - 設立年月日は令和8（2026）年4月1日。2026-09-20に確認し、団体概要に反映済み。
 - ローカルのブランチは `main`。リモート `origin` は `https://github.com/tochigi-kyoryokutai/website.git` に設定済み。
 - GitHub Organization `tochigi-kyoryokutai` の管理画面でリポジトリが未作成であることを確認し、公開リポジトリ [`website`](https://github.com/tochigi-kyoryokutai/website) を作成済み。
-- Cloudflare アカウント・Pagesプロジェクト・ドメインの取得状況は未確認。
+- **Cloudflare Pages は接続済み・稼働中**(2026-09-21 確認)。`main` への push で自動デプロイされ、約1分で反映される。
+  暫定URL `https://tochigi-kyoryokutai.pages.dev` で4ページ・404とも 200/404 を確認済み。
+- ドメイン `tochigi-kyoryokutai.org` は**未取得**(2026-09-21 時点で DNS が引けない)。
+- `*.pages.dev` は `.html` 付きURLを拡張子なしURLへ 308 リダイレクトする(`/about.html` → `/about`)。サイト内リンクは `about.html` のままでも到達するが、1ホップ増える。
+- **検索エンジンに対する制限をかけていない**(`noindex` なし・`robots.txt` は Cloudflare の既定)。暫定URLでもインデックスされ得る。
 - note アカウントは `tochioko_nw` に設定済み。ただし保存済み記事はタイトルに「(テスト)」を含む1件。公開前に掲載内容とRSSを確認する。
 
 再開する順序:
 
-1. ローカルで4ページを確認し、定款の「目的及び事業」・note記事の掲載内容を確定する。定款の原文確認は後日行い、接続準備は先に進める。文言の差し替え後も同じGitHub・Pages連携で更新できる。
-2. 変更をコミットして `git push -u origin main` でGitHubへ送る。GitHub側の `main` とローカルの最新コミットが一致することを確認する。
-3. Cloudflare Pages にGitHubリポジトリを接続し、`*.pages.dev` で4ページ・404・note表示を確認する。
-4. Actionsの「Fetch note RSS」を手動実行し、記事取得からPagesへの反映まで確認する。
-5. サイト確認後、独自ドメインの取得・接続とメール転送を進める。
+1. ~~4ページの確認~~／~~GitHubへ push~~／~~Cloudflare Pages 接続と `*.pages.dev` での確認~~ — 完了(2026-09-21)。
+   定款の「目的及び事業」も原文ベースに差し替え済み。
+2. note記事の掲載内容を確定する(保存済み記事はタイトルに「(テスト)」を含む1件)。
+3. Actionsの「Fetch note RSS」を手動実行し、記事取得からPagesへの反映まで確認する。
+4. 独自ドメインの取得・接続とメール転送を進める。
 
 Pages の設定値: Production branch `main`、Framework preset `None`、Build command `exit 0`（変換処理なし）、Build output directory `/`（このリポジトリのルート）。[Cloudflare公式の静的HTML手順](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)を参照。
 
