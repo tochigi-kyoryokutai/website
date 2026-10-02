@@ -99,7 +99,7 @@ python3 -m http.server 8000
 - [x] さくらインターネットで `tochigi-kyoryokutai.or.jp` 取得（2026-10-01）
 - [x] Cloudflare DNSの有効化とPagesカスタムドメイン接続。管理者がアクティブ・各ページ表示を確認
 - [x] HTTPSの `www.tochigi-kyoryokutai.or.jp` → 正式URLへの301転送を確認（2026-10-02、`/about?check=domain2` のパス・クエリを保持）。www用プロキシAレコードは `192.0.2.1`
-- [ ] HTTPからHTTPSへの転送を確認
+- [x] HTTPからHTTPSへの転送を確認（2026-10-03）。Always Use HTTPSを有効化。通常・www付きの `/about?check=https` がパス・クエリを保持して正式HTTPS URLへ到達し200を返す
 - [x] 4ページの `og:url` / `canonical`、団体概要JSON-LDの `url` を公開反映して確認（2026-10-02、公開HTMLで検証）
 - [x] 存在しない深いパス `/missing/page` がHTTP 404を返すことを確認（2026-10-02）
 - [ ] 深い404画面の戻りリンクをブラウザで確認
