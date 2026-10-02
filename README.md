@@ -100,7 +100,7 @@ python3 -m http.server 8000
 - [x] Cloudflare DNSの有効化とPagesカスタムドメイン接続。管理者がアクティブ・各ページ表示を確認
 - [x] HTTPSの `www.tochigi-kyoryokutai.or.jp` → 正式URLへの301転送を確認（2026-10-02、`/about?check=domain2` のパス・クエリを保持）。www用プロキシAレコードは `192.0.2.1`
 - [ ] HTTPからHTTPSへの転送を確認
-- [ ] 4ページの `og:url` / `canonical`、団体概要JSON-LDの `url` を公開反映して確認（ローカル修正済み）
+- [x] 4ページの `og:url` / `canonical`、団体概要JSON-LDの `url` を公開反映して確認（2026-10-02、公開HTMLで検証）
 - [x] 存在しない深いパス `/missing/page` がHTTP 404を返すことを確認（2026-10-02）
 - [ ] 深い404画面の戻りリンクをブラウザで確認
 - メール設定は別途、運用方式・アドレス・担当の合意後に実施。サイト接続完了をメール設定完了とは扱わない
