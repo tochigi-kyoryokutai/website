@@ -3,7 +3,7 @@
 栃木県内の地域おこし協力隊員・OB/OG・関係者をつなぐネットワークの公式サイトです。
 
 - 公開URL(暫定): **https://tochigi-kyoryokutai.pages.dev** — 2026-09-21 時点で**公開中・誰でも閲覧できる**
-- 公開URL(本番予定): https://tochigi-kyoryokutai.org (ドメイン未取得)
+- 公開URL(本番): **https://tochigi-kyoryokutai.or.jp** — 2026-10-02、Pagesアクティブ・各ページ表示を管理者確認
 - 構成: 静的HTML/CSS + Cloudflare Pages(GitHub リポジトリを接続し、main への push ごとに自動デプロイ)
 - 活動情報: note の記事を GitHub Actions で定期取得して表示しています
 
@@ -32,7 +32,7 @@
 - GitHub Organization `tochigi-kyoryokutai` の管理画面でリポジトリが未作成であることを確認し、公開リポジトリ [`website`](https://github.com/tochigi-kyoryokutai/website) を作成済み。
 - **Cloudflare Pages は接続済み・稼働中**(2026-09-21 確認)。`main` への push で自動デプロイされ、約1分で反映される。
   暫定URL `https://tochigi-kyoryokutai.pages.dev` で4ページ・404とも 200/404 を確認済み。
-- ドメイン `tochigi-kyoryokutai.org` は**未取得**(2026-09-21 時点で DNS が引けない)。
+- 2026-10-02: `tochigi-kyoryokutai.or.jp` を接続済み。取得・更新はさくらインターネット、DNSはCloudflare。
 - `*.pages.dev` は `.html` 付きURLを拡張子なしURLへ 308 リダイレクトする(`/about.html` → `/about`)。サイト内リンクは `about.html` のままでも到達するが、1ホップ増える。
 - **検索エンジンに対する制限をかけていない**(`noindex` なし・`robots.txt` は Cloudflare の既定)。暫定URLでもインデックスされ得る。
 - note アカウントは `tochioko_nw` に設定済み。ただし保存済み記事はタイトルに「(テスト)」を含む1件。公開前に掲載内容とRSSを確認する。
@@ -43,7 +43,7 @@
    定款の「目的及び事業」も原文ベースに差し替え済み。
 2. note記事の掲載内容を確定する(保存済み記事はタイトルに「(テスト)」を含む1件)。
 3. Actionsの「Fetch note RSS」を手動実行し、記事取得からPagesへの反映まで確認する。
-4. 独自ドメインの取得・接続とメール転送を進める。
+4. 独自ドメインの接続は完了。www転送とURL設定の公開反映を確認する。メールは運用方式の決定後に設定する。
 
 Pages の設定値: Production branch `main`、Framework preset `None`、Build command `exit 0`（変換処理なし）、Build output directory `/`（このリポジトリのルート）。[Cloudflare公式の静的HTML手順](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)を参照。
 
@@ -90,18 +90,20 @@ python3 -m http.server 8000
 
 ### ドメイン関連(年次・重要)
 
-- **ドメイン `tochigi-kyoryokutai.org` の更新を切らさない**(Cloudflare Registrar・法人名義)。自動更新設定と支払いカードの有効期限、登録メールアドレスの受信可否を年1回確認する。サイトが死ぬ最有力シナリオは技術障害ではなくドメイン失効
+- **ドメイン `tochigi-kyoryokutai.or.jp` の更新を切らさない**(さくらインターネット管理)。更新期限・更新方法・支払い方法・通知メールの受信可否を年1回確認する。サイトが死ぬ最有力シナリオは技術障害ではなくドメイン失効
 - GitHub Organization のオーナー、Cloudflare アカウントの管理者は、それぞれ2名以上を維持する(担当者が動けなくなっても運営が続くように)
-- ホスティング(Pages)・ドメイン・DNS・メール転送(Email Routing)はすべて同じ Cloudflare アカウントにある。アカウントを失うと全部止まるので、ログイン情報と2段階認証の復旧コードは法人で保管する
+- ホスティング(Pages)・DNSはCloudflare、ドメイン取得・更新管理はさくらインターネット。メール方式は未決定。両サービスのログイン情報と2段階認証の復旧コードは法人で保管する
 
-### ドメイン接続時にやること(未了タスク)
+### ドメイン接続と仕上げ（2026-10-02）
 
-1. Cloudflare Registrar で `tochigi-kyoryokutai.org` を取得(法人名義)。DNS は自動で同じアカウントの Cloudflare DNS に置かれる
-2. Workers & Pages → 対象プロジェクト → Custom domains で `tochigi-kyoryokutai.org` と `www.tochigi-kyoryokutai.org` を追加(DNS レコードと証明書は自動)
-3. `www` → apex のリダイレクトをダッシュボードの Redirect Rules で設定。SSL/TLS → Edge Certificates で「Always Use HTTPS」を ON
-4. Email Routing で法人アドレス(`info@` 等)を作成し、転送先で実際に受信できるところまで確認する
-5. 全4ページの `<head>` に `og:url` / `canonical` を追加、`about.html` の JSON-LD に `url` を追加
-6. 存在しない深いパス（例: `/missing/page`）で `404.html` が表示され、トップ・お問い合わせに戻れることを確認する。リンクはルート相対なので、独自ドメイン接続時の書き換えは不要
+- [x] さくらインターネットで `tochigi-kyoryokutai.or.jp` 取得（2026-10-01）
+- [x] Cloudflare DNSの有効化とPagesカスタムドメイン接続。管理者がアクティブ・各ページ表示を確認
+- [x] HTTPSの `www.tochigi-kyoryokutai.or.jp` → 正式URLへの301転送を確認（2026-10-02、`/about?check=domain2` のパス・クエリを保持）。www用プロキシAレコードは `192.0.2.1`
+- [ ] HTTPからHTTPSへの転送を確認
+- [ ] 4ページの `og:url` / `canonical`、団体概要JSON-LDの `url` を公開反映して確認（ローカル修正済み）
+- [x] 存在しない深いパス `/missing/page` がHTTP 404を返すことを確認（2026-10-02）
+- [ ] 深い404画面の戻りリンクをブラウザで確認
+- メール設定は別途、運用方式・アドレス・担当の合意後に実施。サイト接続完了をメール設定完了とは扱わない
 
 ### その他の未了タスク(HTML内の `TODO:` コメントで検索可能)
 
