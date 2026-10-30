@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<!-- ▼共通ヘッダー(変更時は index/about/business/contact の4ファイルすべてを更新。aria-current の位置のみページごとに異なる) -->
+<!-- ▼共通ヘッダー(変更時は 全記事を含むすべてのHTMLを更新。aria-current の位置のみページごとに異なる) -->
 <a class="skip-link" href="#main">本文へ移動</a>
 <header class="site-header">
   <div class="container">
@@ -31,6 +31,7 @@
         <li><a href="index.html" aria-current="page">ホーム</a></li>
         <li><a href="about.html">団体概要</a></li>
         <li><a href="business.html">事業内容</a></li>
+        <li><a href="articles.html">記事・お知らせ</a></li>
         <li><a href="contact.html">お問い合わせ</a></li>
       </ul>
     </nav>
@@ -99,17 +100,38 @@
     </div>
   </section>
 
+  <section class="band band--surface" aria-labelledby="articles-heading">
+    <div class="container">
+      <h2 id="articles-heading">記事・お知らせ</h2>
+      <ul class="article-list">
+        <li class="article-list-item">
+          <a class="article-card" href="report-2026-07-exit-strategy.html">
+            <img src="images/report-2026-07-03.jpg" width="1600" height="1066" alt="農園のハウスを見学する研修参加者" loading="lazy">
+            <div class="article-card-body">
+              <p class="article-category">活動レポート</p>
+              <p class="article-meta"><time datetime="2026-10-30">2026年10月30日</time>公開</p>
+              <h3 class="article-card-title">協力隊の経験を、地域で続ける仕事へ。塩谷町・矢板市で先輩隊員を訪ねました</h3>
+              <p class="article-card-description">塩谷町・矢板市で、飲食、農業、ものづくり、DX支援に取り組む協力隊経験者を訪問。現役時代の活動と現在の仕事を紹介します。</p>
+              <p class="article-card-more">記事を読む <span aria-hidden="true">→</span></p>
+            </div>
+          </a>
+        </li>
+      </ul>
+      <p class="article-index-link"><a href="articles.html">記事・お知らせをすべて見る →</a></p>
+    </div>
+  </section>
+
   <!-- 新着note: 記事が1件以上あるときだけ js/news.js が hidden を外す -->
   <section id="news" class="band band--surface" data-limit="3" hidden aria-labelledby="news-heading">
     <div class="container">
-      <h2 id="news-heading">新着情報</h2>
+      <h2 id="news-heading">noteの更新</h2>
       <ul class="news-list"></ul>
     </div>
   </section>
 
 </main>
 
-<!-- ▼共通フッター(変更時は index/about/business/contact の4ファイルすべてを更新) -->
+<!-- ▼共通フッター(変更時は 全記事を含むすべてのHTMLを更新) -->
 <footer class="site-footer">
   <div class="container">
     <p class="footer-name"><span class="footer-name-org">一般社団法人</span><span class="footer-name-main">とちぎ地域おこし協力隊<wbr>ネットワーク</span></p>
@@ -118,6 +140,7 @@
         <li><a href="index.html">ホーム</a></li>
         <li><a href="about.html">団体概要</a></li>
         <li><a href="business.html">事業内容</a></li>
+        <li><a href="articles.html">記事・お知らせ</a></li>
         <li><a href="contact.html">お問い合わせ</a></li>
       </ul>
     </nav>
@@ -128,6 +151,7 @@
 </footer>
 <!-- ▲共通フッター -->
 
+<script src="js/note-policy.js" defer></script>
 <script src="js/news.js" defer></script>
 </body>
 </html>

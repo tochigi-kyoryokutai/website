@@ -11,13 +11,17 @@
 
 | ファイル | 役割 |
 | --- | --- |
-| `index.html` | トップ(ヒーロー・活動ダイジェスト・新着note) |
+| `index.html` | トップ(ヒーロー・活動ダイジェスト・記事への導線・新着note) |
 | `about.html` | 団体概要(法人概要・目的及び事業) |
 | `business.html` | 事業内容(県委託事業・活動レポート) |
 | `contact.html` | お問い合わせ(相談窓口のGoogleフォーム2件へのリンク) |
 | `404.html` | エラーページ(CSSインライン+ルート相対リンク) |
 | `css/styles.css` | 唯一のCSS。冒頭 `:root` にデザイントークン |
 | `js/analytics.js` | 正式ホストでのみGoogle Analyticsを読み込む共通スクリプト |
+| `articles.html` | 記事・お知らせ一覧 |
+| `report-2026-07-exit-strategy.html` | 分野別出口戦略研修の活動レポート |
+| `images/` | 公開用に縮小し付加情報を除去した記事写真 |
+| `js/note-policy.js` | note表示の掲載判定。確認済みの仮記事を記事IDで除外 |
 | `js/news.js` | `data/notes.json` を読み込んで新着noteを描画 |
 | `data/notes.json` | GitHub Actions が自動生成する唯一の可変データ |
 | `scripts/fetch-note-rss.mjs` | note RSS → notes.json 変換(依存ゼロ・Node標準のみ) |
@@ -52,12 +56,12 @@ Pages の設定値: Production branch `main`、Framework preset `None`、Build c
 
 ### 共通ヘッダー/フッターの変更(重要)
 
-ヘッダー・フッターは `index.html` `about.html` `business.html` `contact.html` の4ファイルに複製されている。変更するときは**必ず4ファイルすべてを同時に更新**する。対象は `<!-- ▼共通ヘッダー -->` 〜 `<!-- ▲共通ヘッダー -->`(フッターも同様)のコメントマーカー間。ページ間で異なってよいのはナビの `aria-current="page"` の位置だけ。
+ヘッダー・フッターは主要4ページと `articles.html`、個別記事のHTMLに複製されている。変更するときは**記事を含めた全ページを同時に更新**する。対象は `<!-- ▼共通ヘッダー -->` 〜 `<!-- ▲共通ヘッダー -->`(フッターも同様)のコメントマーカー間。ページ間で異なってよいのはナビの `aria-current="page"` の位置だけ。
 
 ズレの機械的チェック(リポジトリ直下で実行。何も表示されなければOK):
 
 ```sh
-for f in about business contact; do
+for f in about business contact articles report-2026-07-exit-strategy; do
   diff <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' index.html | sed 's/ aria-current="page"//') \
        <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' $f.html    | sed 's/ aria-current="page"//')
   diff <(sed -n '/▼共通フッター/,/▲共通フッター/p' index.html) \
@@ -67,7 +71,7 @@ done
 
 ### アクセス解析
 
-主要4ページは `js/analytics.js` を読み込む。測定IDは `G-K4M6ZRL4F3`。
+主要4ページ・記事一覧・個別記事は `js/analytics.js` を読み込む。測定IDは `G-K4M6ZRL4F3`。
 正式ホスト `tochigi-kyoryokutai.or.jp` だけで計測し、localhost・PagesプレビューではGoogleタグを読み込まない。
 広告向けシグナルと広告パーソナライズは無効にしている。
 利用目的・Cookie・Googleへの送信については `contact.html#privacy` にまとめ、共通フッターからリンクする。
@@ -124,3 +128,14 @@ python3 -m http.server 8000
 
 - favicon は SVG のみ(画像ファイルを持たない方針)。Safari ではデフォルトアイコンになることがあるが許容する
 - Android には和文明朝フォントがないため、見出しはゴシックで表示される(サイズ・余白で階層は維持される)
+
+## 記事の追加（2026-10-30）
+
+公式サイトの記事は静的HTMLで掲載する。記事一覧は `articles.html`。レポート以外のお知らせも同じ一覧へ載せ、記事の種類は各項目の短いラベルで示す。記事が少ない間は検索や分類別ページを設けない。
+
+1. 既存の記事HTMLを基に本文・タイトル・説明・canonical・OG情報・公開日を設定する。公開日とイベント開催日を混同しない。
+2. 写真は公開可否を確認してから、縮小しEXIF等を除去したものだけを `images/` に置く。内部確認メモ・名簿・原本資料は置かない。キャプションは補足が必要な場合だけ付ける。
+3. `articles.html` とホームの新着記事へリンクを追加する。活動レポートの場合は `business.html` からもたどれるようにする。
+4. 共通部の一致、内部リンク、320px・375px・PC表示、写真の読み込みを確認する。
+
+記事一覧と本文はJS無効でも読める。noteのRSS反映は従来の別枠で維持する。表示側は `js/note-policy.js` を通し、確認済みの仮記事 `n473cce466438` をタイトル変更後も除外する。サイトの本文がnoteへ自動投稿される仕組みはない。

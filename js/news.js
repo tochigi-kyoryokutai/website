@@ -5,7 +5,8 @@
   "use strict";
 
   var section = document.getElementById("news");
-  if (!section) return;
+  var policy = globalThis.notePublicationPolicy;
+  if (!section || !policy) return;
 
   var list = section.querySelector(".news-list");
   var limit = parseInt(section.getAttribute("data-limit") || "3", 10);
@@ -25,10 +26,10 @@
     })
     .then(function (data) {
       var items = data && Array.isArray(data.items) ? data.items : [];
-      // 生成スクリプト側の検証に加えた2段目の防御: https 以外のリンクは表示しない
+      // 古いJSONでも仮記事を表示しないよう、掲載判定を通す
       items = items
         .filter(function (item) {
-          return isHttps(item.url);
+          return policy.isPublishableNote(item);
         })
         .slice(0, limit);
       if (items.length === 0) return;
