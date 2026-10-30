@@ -17,6 +17,7 @@
 | `contact.html` | お問い合わせ(相談窓口のGoogleフォーム2件へのリンク) |
 | `404.html` | エラーページ(CSSインライン+ルート相対リンク) |
 | `css/styles.css` | 唯一のCSS。冒頭 `:root` にデザイントークン |
+| `js/analytics.js` | 正式ホストでのみGoogle Analyticsを読み込む共通スクリプト |
 | `js/news.js` | `data/notes.json` を読み込んで新着noteを描画 |
 | `data/notes.json` | GitHub Actions が自動生成する唯一の可変データ |
 | `scripts/fetch-note-rss.mjs` | note RSS → notes.json 変換(依存ゼロ・Node標準のみ) |
@@ -63,6 +64,14 @@ for f in about business contact; do
        <(sed -n '/▼共通フッター/,/▲共通フッター/p' $f.html)
 done
 ```
+
+### アクセス解析
+
+主要4ページは `js/analytics.js` を読み込む。測定IDは `G-K4M6ZRL4F3`。
+正式ホスト `tochigi-kyoryokutai.or.jp` だけで計測し、localhost・PagesプレビューではGoogleタグを読み込まない。
+広告向けシグナルと広告パーソナライズは無効にしている。
+利用目的・Cookie・Googleへの送信については `contact.html#privacy` にまとめ、共通フッターからリンクする。
+外部フォームへのクリックと、フォーム送信・相談完了は別であり、フォームの入力内容をGAへ送る設定は行わない。
 
 ### note アカウントの設定
 
