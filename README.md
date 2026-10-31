@@ -20,6 +20,8 @@
 | `js/analytics.js` | 正式ホストでのみGoogle Analyticsを読み込む共通スクリプト |
 | `articles.html` | 記事・お知らせ一覧 |
 | `report-2026-07-exit-strategy.html` | 分野別出口戦略研修の活動レポート |
+| `report-2026-05-new-members.html` | 協力隊初任者研修の活動レポート |
+| `report-2026-05-municipal-staff.html` | 市町職員基礎研修の活動レポート |
 | `images/` | 公開用に縮小し付加情報を除去した記事写真 |
 | `js/note-policy.js` | note表示の掲載判定。確認済みの仮記事を記事IDで除外 |
 | `js/news.js` | `data/notes.json` を読み込んで新着noteを描画 |
@@ -61,7 +63,7 @@ Pages の設定値: Production branch `main`、Framework preset `None`、Build c
 ズレの機械的チェック(リポジトリ直下で実行。何も表示されなければOK):
 
 ```sh
-for f in about business contact articles report-2026-07-exit-strategy; do
+for f in about business contact articles report-2026-07-exit-strategy report-2026-05-new-members report-2026-05-municipal-staff; do
   diff <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' index.html | sed 's/ aria-current="page"//') \
        <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' $f.html    | sed 's/ aria-current="page"//')
   diff <(sed -n '/▼共通フッター/,/▲共通フッター/p' index.html) \
