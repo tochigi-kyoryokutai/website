@@ -6,12 +6,13 @@
 // - 取得・解析に失敗したとき: 既存の notes.json に触らず exit 1(前回の正常データが生き残る)
 // - 正常に取得して記事0件のとき: 空の notes.json を書く(サイト側は非表示に縮退)
 
-// ★ noteアカウントを変更する場合、この1行だけを書き換える
+// ★ noteアカウント変更時は js/note-policy.js の掲載対象も合わせる
 const NOTE_ACCOUNT = "tochioko_nw";
 
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import notePolicy from "../js/note-policy.js";
 
 const OUT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "notes.json");
 const MAX_ITEMS = 10;
@@ -89,8 +90,8 @@ function parseItems(xml) {
     const link = extractTag(block, "link");
     const pubDate = extractTag(block, "pubDate");
     if (!title || !link) continue;
-    // 予期しないリンク先は捨てる(表示側の URL 検証と合わせた2段防御)
-    if (!link.startsWith("https://note.com/")) continue;
+    // 仮記事・対象外のリンクは捨てる（表示側と共用の掲載判定）
+    if (!notePolicy.isPublishableNote({ title, url: link })) continue;
     // 記事サムネイル(media:thumbnail)。https 以外は空扱い
     let thumbnail = extractTag(block, "media:thumbnail");
     if (!thumbnail.startsWith("https://")) thumbnail = "";
