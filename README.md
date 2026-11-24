@@ -19,6 +19,7 @@
 | `css/styles.css` | 唯一のCSS。冒頭 `:root` にデザイントークン |
 | `js/analytics.js` | 正式ホストでのみGoogle Analyticsを読み込む共通スクリプト |
 | `articles.html` | 記事・お知らせ一覧 |
+| `report-2026-11-municipal-exchange.html` | 市町職員研修・交流会の活動レポート |
 | `report-2026-07-exit-strategy.html` | 分野別出口戦略研修の活動レポート |
 | `report-2026-05-new-members.html` | 協力隊初任者研修の活動レポート |
 | `report-2026-05-municipal-staff.html` | 市町職員基礎研修の活動レポート |
@@ -58,16 +59,16 @@ Pages の設定値: Production branch `main`、Framework preset `None`、Build c
 
 ### 共通ヘッダー/フッターの変更(重要)
 
-ヘッダー・フッターは主要4ページと `articles.html`、個別記事のHTMLに複製されている。変更するときは**記事を含めた全ページを同時に更新**する。対象は `<!-- ▼共通ヘッダー -->` 〜 `<!-- ▲共通ヘッダー -->`(フッターも同様)のコメントマーカー間。ページ間で異なってよいのはナビの `aria-current="page"` の位置だけ。
+ヘッダー・フッターは主要4ページと `articles.html`、個別記事のHTMLに複製されている。変更するときは**記事を含めた全ページを同時に更新**する。対象は `<!-- ▼共通ヘッダー -->` 〜 `<!-- ▲共通ヘッダー -->`(フッターも同様)のコメントマーカー間。ページ間で異なってよいのはナビの `aria-current` の位置だけ(主要4ページと記事一覧は `"page"`、個別記事は「記事・お知らせ」に `"true"`)。
 
-ズレの機械的チェック(リポジトリ直下で実行。何も表示されなければOK):
+ズレの機械的チェック(リポジトリ直下で実行。`index.html` と `404.html` 以外の全HTMLが対象なので、記事を足してもコマンドを直す必要はない。何も表示されなければOK):
 
 ```sh
-for f in about business contact articles report-2026-07-exit-strategy report-2026-05-new-members report-2026-05-municipal-staff; do
-  diff <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' index.html | sed 's/ aria-current="page"//') \
-       <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' $f.html    | sed 's/ aria-current="page"//')
+for f in $(ls *.html | grep -v -e '^index.html$' -e '^404.html$'); do
+  diff <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' index.html | sed -E 's/ aria-current="(page|true)"//') \
+       <(sed -n '/▼共通ヘッダー/,/▲共通ヘッダー/p' "$f" | sed -E 's/ aria-current="(page|true)"//') >/dev/null || echo "header: $f"
   diff <(sed -n '/▼共通フッター/,/▲共通フッター/p' index.html) \
-       <(sed -n '/▼共通フッター/,/▲共通フッター/p' $f.html)
+       <(sed -n '/▼共通フッター/,/▲共通フッター/p' "$f") >/dev/null || echo "footer: $f"
 done
 ```
 
@@ -81,7 +82,9 @@ done
 
 ### note アカウントの設定
 
-`scripts/fetch-note-rss.mjs` 冒頭の `const NOTE_ACCOUNT = "tochioko_nw";` は設定済み。アカウントを変更する場合はこの1行を書き換える。GitHub接続後、Actions タブから「Fetch note RSS」を手動実行(Run workflow)し、取得成功と、データに差分がある場合の bot コミット → サイト反映まで一度通して確認する。
+`scripts/fetch-note-rss.mjs` 冒頭の `const NOTE_ACCOUNT = "tochioko_nw";` は設定済み。アカウントを変更する場合は、この値と `js/note-policy.js` の掲載判定にあるアカウント名を合わせて書き換える(`note-policy.js` はRSS生成と画面表示の両方で使う)。GitHub接続後、Actions タブから「Fetch note RSS」を手動実行(Run workflow)し、取得成功と、データに差分がある場合の bot コミット → サイト反映まで一度通して確認する。
+
+回帰確認は `node --test scripts/news.test.mjs`。生成器のテストは一時ディレクトリで行い、実際の `data/notes.json` は変更しない。実RSSの手動取得は `node scripts/fetch-note-rss.mjs` を使う。
 
 ### Actions が赤い・止まったときの一次切り分け
 
